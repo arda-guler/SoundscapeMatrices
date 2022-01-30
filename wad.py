@@ -35,7 +35,7 @@ class map:
                     playerstart_x = x
                     playerstart_y = y
 
-        return [x, y]
+        return [playerstart_x, playerstart_y]
 
     def get_sector(self, x, y):
         
@@ -57,6 +57,18 @@ class map:
             y = int(y)
             
         return self.data[y][x]
+
+    def get_size(self):
+        return self.size
+
+    def get_data(self):
+        return self.data
+
+    def get_number(self):
+        return self.number
+
+    def get_name(self):
+        return self.name
 
 class sector:
     def __init__(self, x, y, wall=False, threat=False, key1=False, key2=False, key3=False, door1=False, door2=False, door3=False, end=False, playerstart=False):
@@ -94,6 +106,15 @@ class sector:
     def take_key3(self):
         self.key3 = False
 
+    def get_pos(self):
+        return [self.x, self.y]
+
+    def get_flags(self):
+        return [self.wall, self.threat, self.key1, self.key2, self.key3, self.door1, self.door2, self.door3, self.end, self.playerstart]
+
+    def has_flags(self):
+        return bool(self.wall or self.threat or self.key1 or self.key2 or self.key3 or self.door1 or self.door2 or self.door3 or self.end or self.playerstart)
+
 class player:
     def __init__(self, x, y):
         self.x = x
@@ -112,6 +133,9 @@ class player:
 
     def get_pos(self):
         return [self.x, self.y]
+
+    def get_orient(self):
+        return self.orient
 
     def is_alive(self):
         return self.alive

@@ -1,9 +1,10 @@
 from pygame import mixer
+import math
 
 def init_sound():
     mixer.init(channels=11)
 
-def play_sfx(track, channel=1, volume=1, loops=0):
+def playSfx(track, channel=1, volume=1, loops=0):
 
     # failsafe
     if channel == 0:
