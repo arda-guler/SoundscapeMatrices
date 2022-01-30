@@ -70,6 +70,9 @@ class map:
     def get_name(self):
         return self.name
 
+    def get_desc(self):
+        return self.desc
+
 class sector:
     def __init__(self, x, y, wall=False, threat=False, key1=False, key2=False, key3=False, door1=False, door2=False, door3=False, end=False, playerstart=False):
         

@@ -31,12 +31,38 @@ def load_map(ep_name, map_filename):
 
     return current_map, current_player
 
-def play_episode(ep_name):
+def play_episode(ep_name, difficulty):
 
-    def play_map(map_name):
+    def play_map(map_name, difficulty):
         c_map, c_player = load_map(ep_name, map_name)
         delta_t = 0.01
         end_flag = False
+
+        if os.name == "nt":
+            os.system("cls")
+        else:
+            os.system("clear")
+
+        ascii_map_str = ""
+        
+        if difficulty == 1:
+            for y in c_map.get_data():
+                ascii_map_str += "\n"
+                for x in y:
+                    if x.wall:
+                        ascii_map_str += "#"
+                    elif x.end:
+                        ascii_map_str += "E"
+                    elif x.threat:
+                        ascii_map_str += "X"
+                    elif x.playerstart:
+                        ascii_map_str += "P"
+                    else:
+                        ascii_map_str += "."
+
+        print(c_map.get_name(), "\n")
+        print(ascii_map_str, "\n")
+        print(c_map.get_desc())
 
         def dist(coord1, coord2):
             return ((coord1[0] - coord2[0])**2 + (coord1[1] - coord2[1])**2)**0.5
@@ -255,7 +281,7 @@ def play_episode(ep_name):
     i = 0
     
     while i < number_of_maps:
-        success = play_map(e1_maps[i][1])
+        success = play_map(e1_maps[i][1], difficulty)
         if success:
             i += 1
         else:
@@ -265,6 +291,7 @@ def play_episode(ep_name):
 
 def init():
     init_sound()
-    play_episode("E1")
+    difficulty = int(input("Select difficulty (1 or 2):"))
+    play_episode("E1", difficulty)
 
 init()
