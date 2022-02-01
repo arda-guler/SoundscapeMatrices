@@ -228,20 +228,20 @@ def read_map(map_filename):
                     new_sector = sector(x, y, threat=True)
 
                 # keys
-                elif char == "z":
+                elif char == "a":
                     new_sector = sector(x, y, key1=True)
 
-                elif char == "x":
+                elif char == "b":
                     new_sector = sector(x, y, key2=True)
 
                 elif char == "c":
                     new_sector = sector(x, y, key3=True)
 
                 # doors
-                elif char == "Z":
+                elif char == "A":
                     new_sector = sector(x, y, door1=True)
 
-                elif char == "X":
+                elif char == "B":
                     new_sector = sector(x, y, door2=True)
 
                 elif char == "C":

@@ -57,6 +57,18 @@ def play_episode(ep_name, difficulty):
                         ascii_map_str += "X"
                     elif x.playerstart:
                         ascii_map_str += "P"
+                    elif x.key1:
+                        ascii_map_str += "a"
+                    elif x.key2:
+                        ascii_map_str += "b"
+                    elif x.key3:
+                        ascii_map_str += "c"
+                    elif x.door1:
+                        ascii_map_str += "A"
+                    elif x.door2:
+                        ascii_map_str += "B"
+                    elif x.door3:
+                        ascii_map_str += "C"
                     else:
                         ascii_map_str += "."
 
@@ -117,14 +129,17 @@ def play_episode(ep_name, difficulty):
             elif player_sector.key1:
                 c_player.give_key1()
                 player_sector.take_key1()
+                print("KEY-A ACQUIRED!")
 
             elif player_sector.key2:
                 c_player.give_key2()
                 player_sector.take_key2()
+                print("KEY-B ACQUIRED!")
 
             elif player_sector.key3:
                 c_player.give_key3()
                 player_sector.take_key3()
+                print("KEY-C ACQUIRED!")
 
             # no moving thru doors without keys
             elif player_sector.door1 and not c_player.has_key1():
@@ -172,6 +187,16 @@ def play_episode(ep_name, difficulty):
             wall_volume = [0,0]
             threat_volume = [0,0]
             end_volume = [0,0]
+            key1_volume = [0,0]
+            key2_volume = [0,0]
+            key3_volume = [0,0]
+            door1_volume = [0,0]
+            door2_volume = [0,0]
+            door3_volume = [0,0]
+
+            # OKAY so I made these all separately so that it will be easier to give a special effect to any
+            # kind of sound source sector that we want. the computer should have to make nearly the same amount
+            # of work whether I write this all in a for loop or separately by hand
             for source in sound_sources:
 
                 # walls (there can be multiple!!)
@@ -201,13 +226,98 @@ def play_episode(ep_name, difficulty):
 
                     orn = c_player.get_orient()
                     
-                    # cos(a) = [(xa * xb + ya * yb) / (√(xa2 + ya2) * √(xb2 + yb2))]
                     right_alignment = (threat_dir[0] * orn[0][0] + threat_dir[1] * orn[0][1])
-                    # ^^ no need to divide since the magnitudes of orn[0] and wall_dir are both 1
                     alignment = [(1-right_alignment)/2, (1+right_alignment)/2]
                     volume_mult = getVolumeAtDistance(d)
                     threat_volume[0] += volume_mult * alignment[0]
                     threat_volume[1] += volume_mult * alignment[1]
+
+                # door1 (there can be multiple!!)
+                elif source.door1:
+                    d = dist(c_player.get_pos(), source.get_pos())
+                    door1_dir = [source.get_pos()[0] - c_player.get_pos()[0], source.get_pos()[1] - c_player.get_pos()[1]]
+                    door1_dir[0] = door1_dir[0]/d
+                    door1_dir[1] = door1_dir[1]/d
+
+                    orn = c_player.get_orient()
+                    
+                    right_alignment = (door1_dir[0] * orn[0][0] + door1_dir[1] * orn[0][1])
+                    alignment = [(1-right_alignment)/2, (1+right_alignment)/2]
+                    volume_mult = getVolumeAtDistance(d)
+                    door1_volume[0] += volume_mult * alignment[0]
+                    door1_volume[1] += volume_mult * alignment[1]
+
+                # door2 (there can be multiple!!)
+                elif source.door2:
+                    d = dist(c_player.get_pos(), source.get_pos())
+                    door2_dir = [source.get_pos()[0] - c_player.get_pos()[0], source.get_pos()[1] - c_player.get_pos()[1]]
+                    door2_dir[0] = door2_dir[0]/d
+                    door2_dir[1] = door2_dir[1]/d
+
+                    orn = c_player.get_orient()
+                    
+                    right_alignment = (door2_dir[0] * orn[0][0] + door2_dir[1] * orn[0][1])
+                    alignment = [(1-right_alignment)/2, (1+right_alignment)/2]
+                    volume_mult = getVolumeAtDistance(d)
+                    door2_volume[0] += volume_mult * alignment[0]
+                    door2_volume[1] += volume_mult * alignment[1]
+
+                # door3 (there can be multiple!!)
+                elif source.door3:
+                    d = dist(c_player.get_pos(), source.get_pos())
+                    door3_dir = [source.get_pos()[0] - c_player.get_pos()[0], source.get_pos()[1] - c_player.get_pos()[1]]
+                    door3_dir[0] = door3_dir[0]/d
+                    door3_dir[1] = door3_dir[1]/d
+
+                    orn = c_player.get_orient()
+                    
+                    right_alignment = (door3_dir[0] * orn[0][0] + door3_dir[1] * orn[0][1])
+                    alignment = [(1-right_alignment)/2, (1+right_alignment)/2]
+                    volume_mult = getVolumeAtDistance(d)
+                    door3_volume[0] += volume_mult * alignment[0]
+                    door3_volume[1] += volume_mult * alignment[1]
+
+                # key1
+                elif source.key1:
+                    d = dist(c_player.get_pos(), source.get_pos())
+                    key1_dir = [source.get_pos()[0] - c_player.get_pos()[0], source.get_pos()[1] - c_player.get_pos()[1]]
+                    key1_dir[0] = key1_dir[0]/d
+                    key1_dir[1] = key1_dir[1]/d
+
+                    orn = c_player.get_orient()
+                    
+                    right_alignment = (key1_dir[0] * orn[0][0] + key1_dir[1] * orn[0][1])
+                    alignment = [(1-right_alignment)/2, (1+right_alignment)/2]
+                    volume_mult = getVolumeAtDistance(d)
+                    key1_volume = [volume_mult * alignment[0], volume_mult * alignment[1]]
+
+                # key2
+                elif source.key2:
+                    d = dist(c_player.get_pos(), source.get_pos())
+                    key2_dir = [source.get_pos()[0] - c_player.get_pos()[0], source.get_pos()[1] - c_player.get_pos()[1]]
+                    key2_dir[0] = key2_dir[0]/d
+                    key2_dir[1] = key2_dir[1]/d
+
+                    orn = c_player.get_orient()
+                    
+                    right_alignment = (key2_dir[0] * orn[0][0] + key2_dir[1] * orn[0][1])
+                    alignment = [(1-right_alignment)/2, (1+right_alignment)/2]
+                    volume_mult = getVolumeAtDistance(d)
+                    key2_volume = [volume_mult * alignment[0], volume_mult * alignment[1]]
+
+                # key3
+                elif source.key3:
+                    d = dist(c_player.get_pos(), source.get_pos())
+                    key3_dir = [source.get_pos()[0] - c_player.get_pos()[0], source.get_pos()[1] - c_player.get_pos()[1]]
+                    key3_dir[0] = key3_dir[0]/d
+                    key3_dir[1] = key3_dir[1]/d
+
+                    orn = c_player.get_orient()
+                    
+                    right_alignment = (key3_dir[0] * orn[0][0] + key3_dir[1] * orn[0][1])
+                    alignment = [(1-right_alignment)/2, (1+right_alignment)/2]
+                    volume_mult = getVolumeAtDistance(d)
+                    key3_volume = [volume_mult * alignment[0], volume_mult * alignment[1]]
 
                 # end
                 elif source.end:
@@ -218,9 +328,7 @@ def play_episode(ep_name, difficulty):
 
                     orn = c_player.get_orient()
                     
-                    # cos(a) = [(xa * xb + ya * yb) / (√(xa2 + ya2) * √(xb2 + yb2))]
                     right_alignment = (end_dir[0] * orn[0][0] + end_dir[1] * orn[0][1])
-                    # ^^ no need to divide since the magnitudes of orn[0] and wall_dir are both 1
                     alignment = [(1-right_alignment)/2, (1+right_alignment)/2]
                     volume_mult = getVolumeAtDistance(d)
                     end_volume = [volume_mult * alignment[0], volume_mult * alignment[1]]
@@ -240,6 +348,30 @@ def play_episode(ep_name, difficulty):
             elif threat_volume[1] > 1:
                 threat_volume[0] = 1/threat_volume[1]
                 threat_volume[1] = 1
+
+            # normalize door1 sound
+            if door1_volume[0] > 1:
+                door1_volume[1] = 1/door1_volume[0]
+                door1_volume[0] = 1
+            elif door1_volume[1] > 1:
+                door1_volume[0] = 1/door1_volume[1]
+                door1_volume[1] = 1
+
+            # normalize door2 sound
+            if door2_volume[0] > 1:
+                door2_volume[1] = 1/door2_volume[0]
+                door2_volume[0] = 1
+            elif door2_volume[1] > 1:
+                door2_volume[0] = 1/door2_volume[1]
+                door2_volume[1] = 1
+
+            # normalize door3 sound
+            if door3_volume[0] > 1:
+                door3_volume[1] = 1/door3_volume[0]
+                door3_volume[0] = 1
+            elif door3_volume[1] > 1:
+                door3_volume[0] = 1/door3_volume[1]
+                door3_volume[1] = 1
                 
             # now, actually play the sounds
             if wall_volume[0] or wall_volume[1]:
@@ -259,6 +391,42 @@ def play_episode(ep_name, difficulty):
                     playSfx("gate", 1)
 
                 setChannelVolume(1, end_volume[0], end_volume[1])
+
+            if door1_volume[0] or door1_volume[1]:
+                if not getChannelBusy(7):
+                    playSfx("door1", 7)
+
+                setChannelVolume(7, door1_volume[0], door1_volume[1])
+
+            if door2_volume[0] or door2_volume[1]:
+                if not getChannelBusy(8):
+                    playSfx("door2", 8)
+
+                setChannelVolume(8, door2_volume[0], door2_volume[1])
+
+            if door3_volume[0] or door3_volume[1]:
+                if not getChannelBusy(9):
+                    playSfx("door3", 9)
+
+                setChannelVolume(9, door3_volume[0], door3_volume[1])
+
+            if key1_volume[0] or key1_volume[1]:
+                if not getChannelBusy(4):
+                    playSfx("key1", 4)
+
+                setChannelVolume(4, key1_volume[0], key1_volume[1])
+
+            if key2_volume[0] or key2_volume[1]:
+                if not getChannelBusy(5):
+                    playSfx("key2", 5)
+
+                setChannelVolume(5, key2_volume[0], key2_volume[1])
+
+            if key3_volume[0] or key3_volume[1]:
+                if not getChannelBusy(6):
+                    playSfx("key3", 6)
+
+                setChannelVolume(6, key3_volume[0], key3_volume[1])
 
             # make sure we have a consistent update rate
             cycle_dt = time.perf_counter() - cycle_start
