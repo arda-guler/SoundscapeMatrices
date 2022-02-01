@@ -37,44 +37,49 @@ def play_episode(ep_name, difficulty):
         c_map, c_player = load_map(ep_name, map_name)
         delta_t = 0.01
         end_flag = False
+        search_radius = 3
 
-        if os.name == "nt":
-            os.system("cls")
-        else:
-            os.system("clear")
+        def draw_map():
+            if os.name == "nt":
+                os.system("cls")
+            else:
+                os.system("clear")
+            
+            ascii_map_str = ""
+            
+            if difficulty == 1:
+                for y in c_map.get_data():
+                    ascii_map_str += "\n"
+                    for x in y:
+                        if x.wall:
+                            ascii_map_str += "#"
+                        elif x.end:
+                            ascii_map_str += "E"
+                        elif x.threat:
+                            ascii_map_str += "X"
+                        elif x.playerstart:
+                            ascii_map_str += "P"
+                        elif x.key1:
+                            ascii_map_str += "a"
+                        elif x.key2:
+                            ascii_map_str += "b"
+                        elif x.key3:
+                            ascii_map_str += "c"
+                        elif x.door1:
+                            ascii_map_str += "A"
+                        elif x.door2:
+                            ascii_map_str += "B"
+                        elif x.door3:
+                            ascii_map_str += "C"
+                        else:
+                            ascii_map_str += "."
 
-        ascii_map_str = ""
-        
-        if difficulty == 1:
-            for y in c_map.get_data():
-                ascii_map_str += "\n"
-                for x in y:
-                    if x.wall:
-                        ascii_map_str += "#"
-                    elif x.end:
-                        ascii_map_str += "E"
-                    elif x.threat:
-                        ascii_map_str += "X"
-                    elif x.playerstart:
-                        ascii_map_str += "P"
-                    elif x.key1:
-                        ascii_map_str += "a"
-                    elif x.key2:
-                        ascii_map_str += "b"
-                    elif x.key3:
-                        ascii_map_str += "c"
-                    elif x.door1:
-                        ascii_map_str += "A"
-                    elif x.door2:
-                        ascii_map_str += "B"
-                    elif x.door3:
-                        ascii_map_str += "C"
-                    else:
-                        ascii_map_str += "."
+            print(c_map.get_name(), "\n")
+            print(ascii_map_str, "\n")
+            print(c_map.get_desc())
+            print("Hearing radius:", str(search_radius), "units")
 
-        print(c_map.get_name(), "\n")
-        print(ascii_map_str, "\n")
-        print(c_map.get_desc())
+        draw_map()
 
         def dist(coord1, coord2):
             return ((coord1[0] - coord2[0])**2 + (coord1[1] - coord2[1])**2)**0.5
@@ -103,6 +108,16 @@ def play_episode(ep_name, difficulty):
             if kbd.is_pressed("l"):
                 cmd_rotate -= 1
 
+            # increase - decrease hearing radius
+            if kbd.is_pressed("y") and search_radius < 6:
+                search_radius += 1
+                time.sleep(0.2)
+                draw_map()
+            if kbd.is_pressed("t") and search_radius > 2:
+                search_radius -= 1
+                time.sleep(0.2)
+                draw_map()
+
             cmd_rotate *= delta_t
             cmd_move_x *= delta_t
             cmd_move_y *= delta_t
@@ -130,16 +145,22 @@ def play_episode(ep_name, difficulty):
                 c_player.give_key1()
                 player_sector.take_key1()
                 print("KEY-A ACQUIRED!")
+                time.sleep(1)
+                draw_map()
 
             elif player_sector.key2:
                 c_player.give_key2()
                 player_sector.take_key2()
                 print("KEY-B ACQUIRED!")
+                time.sleep(1)
+                draw_map()
 
             elif player_sector.key3:
                 c_player.give_key3()
                 player_sector.take_key3()
                 print("KEY-C ACQUIRED!")
+                time.sleep(1)
+                draw_map()
 
             # no moving thru doors without keys
             elif player_sector.door1 and not c_player.has_key1():
@@ -154,6 +175,10 @@ def play_episode(ep_name, difficulty):
             # stepped on a threat sector? too bad.
             elif player_sector.threat:
                 c_player.kill()
+                playSfx("death", 10)
+                print("YOU HAVE DIED - RESTARTING LEVEL...")
+                time.sleep(2)
+                draw_map()
 
             elif player_sector.end:
                 end_flag = True
@@ -170,7 +195,6 @@ def play_episode(ep_name, difficulty):
             # 8 -- door2
             # 9 -- door3
             sectors_nearby = []
-            search_radius = 3
 
             search_start_x = max(int(c_player.get_pos()[0]) - search_radius, 0)
             search_start_y = max(int(c_player.get_pos()[1]) - search_radius, 0)

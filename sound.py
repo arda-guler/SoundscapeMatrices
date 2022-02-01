@@ -2,7 +2,8 @@ from pygame import mixer
 import math
 
 def init_sound():
-    mixer.init(channels=11)
+    mixer.init(channels=2)
+    mixer.set_num_channels(11)
 
 def playSfx(track, channel=1, volume=1, loops=0):
 
