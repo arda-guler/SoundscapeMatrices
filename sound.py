@@ -34,9 +34,19 @@ def playBGM(track, volume=1):
     chn.set_volume(volume)
     chn.play(snd, -1)
 
+def stopChannel(channel):
+    try:
+        chn = mixer.Channel(channel)
+        chn.stop()
+    except IndexError:
+        pass
+
 def getChannelBusy(channel):
-    chn = mixer.Channel(channel)
-    return chn.get_busy()
+    try:
+        chn = mixer.Channel(channel)
+        return chn.get_busy()
+    except IndexError:
+        return False
 
 def getVolumeAtDistance(dist):
     return min(1, 1/(dist**2))

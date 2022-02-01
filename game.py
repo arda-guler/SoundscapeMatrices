@@ -379,54 +379,72 @@ def play_episode(ep_name, difficulty):
                     playSfx("wall_chime", 3)
 
                 setChannelVolume(3, wall_volume[0], wall_volume[1])
+            elif getChannelBusy(3):
+                stopChannel(3)
 
             if threat_volume[0] or threat_volume[1]:
                 if not getChannelBusy(2):
                     playSfx("evil", 2)
 
                 setChannelVolume(2, threat_volume[0], threat_volume[1])
+            elif getChannelBusy(2):
+                stopChannel(2)
 
             if end_volume[0] or end_volume[1]:
                 if not getChannelBusy(1):
                     playSfx("gate", 1)
 
                 setChannelVolume(1, end_volume[0], end_volume[1])
+            elif getChannelBusy(1):
+                stopChannel(1)
 
             if door1_volume[0] or door1_volume[1]:
                 if not getChannelBusy(7):
                     playSfx("door1", 7)
 
                 setChannelVolume(7, door1_volume[0], door1_volume[1])
+            elif getChannelBusy(7):
+                stopChannel(7)
 
             if door2_volume[0] or door2_volume[1]:
                 if not getChannelBusy(8):
                     playSfx("door2", 8)
 
                 setChannelVolume(8, door2_volume[0], door2_volume[1])
+            elif getChannelBusy(8):
+                stopChannel(8)
 
             if door3_volume[0] or door3_volume[1]:
                 if not getChannelBusy(9):
                     playSfx("door3", 9)
 
                 setChannelVolume(9, door3_volume[0], door3_volume[1])
+            elif getChannelBusy(9):
+                stopChannel(9)
 
             if key1_volume[0] or key1_volume[1]:
                 if not getChannelBusy(4):
                     playSfx("key1", 4)
 
                 setChannelVolume(4, key1_volume[0], key1_volume[1])
+            elif getChannelBusy(4):
+                stopChannel(4)
 
             if key2_volume[0] or key2_volume[1]:
                 if not getChannelBusy(5):
                     playSfx("key2", 5)
 
                 setChannelVolume(5, key2_volume[0], key2_volume[1])
+            elif getChannelBusy(5):
+                stopChannel(5)
 
             if key3_volume[0] or key3_volume[1]:
                 if not getChannelBusy(6):
                     playSfx("key3", 6)
 
                 setChannelVolume(6, key3_volume[0], key3_volume[1])
+            elif getChannelBusy(6):
+                stopChannel(6)
 
             # make sure we have a consistent update rate
             cycle_dt = time.perf_counter() - cycle_start
@@ -456,6 +474,7 @@ def play_episode(ep_name, difficulty):
             pass
 
     print("END OF EPISODE.")
+    time.sleep(5)
 
 def init():
     init_sound()
