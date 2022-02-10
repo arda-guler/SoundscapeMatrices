@@ -51,7 +51,7 @@ def play_episode(ep_name, difficulty):
                 for y in c_map.get_data():
                     ascii_map_str += "\n"
                     for x in y:
-                        if x.wall:
+                        if x.wall and not x.secret:
                             ascii_map_str += "#"
                         elif x.end:
                             ascii_map_str += "E"
@@ -72,7 +72,8 @@ def play_episode(ep_name, difficulty):
                         elif x.door3:
                             ascii_map_str += "C"
                         else:
-                            ascii_map_str += "."
+                            if not x.secret:
+                                ascii_map_str += "."
 
             print(c_map.get_name(), "\n")
             print(ascii_map_str, "\n")

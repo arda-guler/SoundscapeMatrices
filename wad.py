@@ -74,7 +74,7 @@ class map:
         return self.desc
 
 class sector:
-    def __init__(self, x, y, wall=False, threat=False, key1=False, key2=False, key3=False, door1=False, door2=False, door3=False, end=False, playerstart=False):
+    def __init__(self, x, y, wall=False, threat=False, key1=False, key2=False, key3=False, door1=False, door2=False, door3=False, end=False, playerstart=False, secret=False):
         
         # where the sector is located on the map
         self.x = int(x)
@@ -102,6 +102,9 @@ class sector:
         # is this the starting position for player?
         self.playerstart = playerstart
 
+        # should this NOT be shown on the map?
+        self.secret = secret
+
     def take_key1(self):
         self.key1 = False
     def take_key2(self):
@@ -113,10 +116,10 @@ class sector:
         return [self.x, self.y]
 
     def get_flags(self):
-        return [self.wall, self.threat, self.key1, self.key2, self.key3, self.door1, self.door2, self.door3, self.end, self.playerstart]
+        return [self.wall, self.threat, self.key1, self.key2, self.key3, self.door1, self.door2, self.door3, self.end, self.playerstart, self.secret]
 
     def has_flags(self):
-        return bool(self.wall or self.threat or self.key1 or self.key2 or self.key3 or self.door1 or self.door2 or self.door3 or self.end or self.playerstart)
+        return bool(self.wall or self.threat or self.key1 or self.key2 or self.key3 or self.door1 or self.door2 or self.door3 or self.end or self.playerstart or self.secret)
 
 class player:
     def __init__(self, x, y):
@@ -215,9 +218,17 @@ def read_map(map_filename):
                 if char == ".":
                     new_sector = sector(x, y)
 
+                # secret traversable sector
+                elif char == "_":
+                    new_sector = sector(x, y, secret=True)
+
                 # wall
                 elif char == "#":
                     new_sector = sector(x, y, wall=True)
+
+                # secret wall
+                elif char == "!":
+                    new_sector = sector(x, y, wall=True, secret=True)
 
                 # end
                 elif char == "E":
